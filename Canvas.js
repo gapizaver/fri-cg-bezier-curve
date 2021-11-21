@@ -30,9 +30,69 @@ export class Canvas {
         button.addEventListener("click", (e) => {
             this.newSpline();
         }, false);
+
+        button = document.getElementById("delete_spline");
+        button.addEventListener("click", (e) => {
+            this.deleteSpline()
+        });
+
+        let select = document.getElementById("select");
+        select.addEventListener("change", (e) => {
+            this.splineSelectChanged();
+        });
+    }
+
+    deleteSpline() {
+        let select = document.getElementById("select");
+
+        // check if any spline selected/exist
+        if (select.length == 0)
+            return;
+
+        let index = select.selectedIndex;
+        // remove spline from splines array
+        this.splines.splice(index, 1);
+        // remove item from HTMLSelectElement
+        select.remove(index);
+        // correct indexes on HTMLSelectElement's items' names
+        for (let i = 0; i < select.length; i++) {
+            select.item(i).text = "Zlepek " + (i+1);
+        }
+
+        // correct local pointers to selected spline
+        this.currentSpline = select.selectedIndex;
+        if (this.currentSpline == -1) {
+            this.currentSpline = 0;
+            this.currentCurve = 0;
+        } else if (typeof this.splines[this.currentSpline] == "undefined" ||
+                    this.splines[this.currentSpline].curves[0].points[2] == null)
+            this.currentCurve = 0;
+        else
+            this.currentCurve = this.splines[this.currentSpline].curves.length;
+
+        // rerender
+        this.render();
+    }
+
+    splineSelectChanged()  {
+        let select = document.getElementById("select");
+        this.currentSpline = select.selectedIndex;
+        if (typeof this.splines[this.currentSpline] == "undefined" ||
+                    this.splines[this.currentSpline].curves[0].points[2] == null)
+            this.currentCurve = 0;
+        else
+            this.currentCurve = this.splines[this.currentSpline].curves.length;
     }
 
     onMouseDown(e) {
+        // check if there are any splices
+        let select = document.getElementById("select");
+        if (select.length == 0) {
+            alert("Izbran ni noben zlepek. Dodajte nov zlepek.");
+            return;
+        }
+
+        // get mouse coordinates
         let x = e.offsetX;
         let y = e.offsetY;
 
@@ -190,13 +250,17 @@ export class Canvas {
     }
 
     newSpline() {
-        if (this.splines[this.currentSpline] == null) {
-            alert();
-            return;
-        }
-
-        this.currentSpline++;
+        let select = document.getElementById("select");
+        
+        // set local pointers to a new spline
+        this.currentSpline = select.length;
         this.currentCurve = 0;
+
+        // set HTMLSelectElement to new item
+        let newItem = document.createElement("option");
+        newItem.text = "Zlepek " + (this.currentSpline +1);
+        select.add(newItem);
+        select.selectedIndex = select.length-1;
     }
 
     render() {
