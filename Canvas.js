@@ -40,6 +40,22 @@ export class Canvas {
         select.addEventListener("change", (e) => {
             this.splineSelectChanged();
         });
+
+        let colorInput = document.getElementById("color");
+        colorInput.addEventListener("input", (e) => {
+            this.colorInput();
+        });
+    }
+
+    colorInput() {
+        // check if any spline selected/exist
+        if (document.getElementById("select").length == 0)
+            return;
+        
+        let colorInput = document.getElementById("color");
+        // change color of the selected spline
+        if (typeof this.splines[this.currentSpline] != "undefined")
+            this.splines[this.currentSpline].color = colorInput.value;
     }
 
     deleteSpline() {
@@ -166,13 +182,17 @@ export class Canvas {
                 if (typeof this.splines[this.currentSpline] == "undefined") {    
                     // first mouse down of the spline
                     let point_to_move = new Vector([x,y]);
-                    this.splines.push(new Spline([
-                        new Bezier([new Vector([x,y]), point_to_move, null, null])
-                    ]));
+                    let colorPicker = document.getElementById("color");
+
+                    this.splines.push(new Spline(
+                        [new Bezier([new Vector([x,y]), point_to_move, null, null])],
+                        colorPicker.value
+                    ));
                     this.selectedPoints = [point_to_move];
                 } else {
                     // second mouse down of the spline
                     let point_to_move = new Vector([x, y]);
+
                     this.splines[this.currentSpline].curves[0].points[2] = new Vector([x, y]);
                     this.splines[this.currentSpline].curves[0].points[3] = point_to_move;
                     this.selectedPoints = [point_to_move];
@@ -272,6 +292,7 @@ export class Canvas {
             //draw curve
             if (this.splines[i].curves.length > 0 && this.splines[i].curves[0].points[2] != null) {
                 this.ctx.setLineDash([]);
+                this.ctx.strokeStyle = this.splines[i].color;
 
                 this.ctx.beginPath();
                 for (let j = 0; j < this.splines[i].curves.length; j+=0.01) {
@@ -288,6 +309,7 @@ export class Canvas {
 
             // draw points
             this.ctx.setLineDash([]);
+            this.ctx.strokeStyle = "black";
             for (let j = 0; j < this.splines[i].curves.length; j++) {
                 let max = 4
                 if (j == 0 && this.splines[i].curves[0].points[2] == null)

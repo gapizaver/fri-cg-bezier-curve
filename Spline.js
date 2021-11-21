@@ -1,9 +1,12 @@
 export class Spline {
-    constructor (curves) {
+    constructor (curves, color = "#000000") {
         if (!curves instanceof Array) {
-            console.out("Argument Sline konstruktorja mora biti tipa Array");
+            console.log("Argument Sline konstruktorja curves mora biti tipa Array");
+        } else if (!color instanceof String){
+            console.log("Argument Spline konstructorja color mora biti tipa String");
         } else {
             this.curves = curves;
+            this.color = color;
         }
     }
 
