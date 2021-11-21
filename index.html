@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bezier curve</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+ 
+    <canvas id="canvas" width="700" height="700" style="border: 1px solid black;"></canvas>
+    <br>
+    <button id="new_spline">Dodaj nov zlepek</button>
+    <script type="module">
+        import {Canvas} from "./Canvas.js";
+
+        let c;
+        c = document.getElementById("canvas")
+        new Canvas(c);
+    </script>
+</body>
+</html> 
