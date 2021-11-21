@@ -49,8 +49,8 @@ export class Canvas {
                     // if point exists
                     if (point != null) {            
                         // if mouse cursor inside point
-                        if (Math.abs(point.coor[0] - x) < this.pointSize &&
-                                    Math.abs(point.coor[1] - y) < this.pointSize) {
+                        if (Math.abs(point.coor[0] - x) < this.pointSize+1 &&
+                                    Math.abs(point.coor[1] - y) < this.pointSize+1) {
                             // add selected point
                             this.selectedPoints.push(point);
 
